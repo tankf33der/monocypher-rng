@@ -54,6 +54,8 @@
 #include "monocypher-rng.h"
 #include "monocypher.h"
 
+#include <stdio.h>
+
 // avoid memcpy dependency (the compiler will likely use memcpy anyway)
 static void copy(uint8_t *out, uint8_t *in, size_t size)
 {
@@ -74,7 +76,9 @@ void crypto_rng_init(crypto_rng_ctx *ctx, uint8_t random_seed[32])
 void crypto_rng_read(crypto_rng_ctx *ctx, uint8_t *buf, size_t size)
 {
     size_t pool_size = 512 - ctx->idx;
+	printf("start: %zu, %zu\n", pool_size, ctx->idx);
     while (size > pool_size) {
+    	printf("while\n");
         copy(buf, ctx->pool + ctx->idx, pool_size);
         crypto_chacha20(ctx->pool, 0, 512, ctx->pool, zero);
         size     -= pool_size;
